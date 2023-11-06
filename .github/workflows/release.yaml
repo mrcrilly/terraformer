@@ -18,14 +18,27 @@ jobs:
           go-version: "1.21"
       - name: Test
         run: go build -v && go test ./...
-      - name: Build for linux/amd64
-        run: go build -o terraformer-all-linux-amd64
+      
+      - name: Build for linux/amd64 and compress
+        run: |
+          go build -ldflags="-s -w" -o terraformer-all-linux-amd64
+          upx terraformer-all-linux-amd64
+      
       - name: Build for linux/arm64
-        run: GOOS=linux GOARCH=arm64 go build -o terraformer-all-linux-arm64
+        run: |
+          GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o terraformer-all-linux-arm64
+          upx terraformer-all-linux-arm64
+      
       - name: Build for mac
-        run: GOOS=darwin go build -o terraformer-all-darwin-amd64
+        run: |
+          GOOS=darwin go build -ldflags="-s -w" -o terraformer-all-darwin-amd64
+          upx terraformer-all-darwin-amd64
+      
       - name: Build for mac Apple Silicon
-        run: GOOS=darwin GOARCH=arm64 go build -o terraformer-all-darwin-arm64
+        run: |
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o terraformer-all-darwin-arm64
+          upx terraformer-all-darwin-arm64
+      
       - name: Build for all providers
         run: go run build/multi-build/main.go
 
